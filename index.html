@@ -19,7 +19,7 @@
 
         h1 {
             margin-bottom: 20px;
-            text-align: center; /* Başlığı ortalamak için ekledim */
+            text-align: center;
         }
 
         select {
@@ -50,12 +50,12 @@
         #scramble-text {
             margin-top: 20px;
             font-size: 20px;
-            text-align: center; /* Scramble metnini ortalamak için ekledim */
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Rubik's Cube<br>Scramble Oluşturucu</h1> <!-- Başlığı iki satıra ayırdım -->
+    <h1>Rubik's Cube<br>Scramble Oluşturucu</h1>
     <select id="cube-type">
         <option value="2x2">2x2</option>
         <option value="3x3">3x3</option>
@@ -138,8 +138,7 @@
 
             function generateScramble(moves, modifiers, length) {
                 let scramble = [];
-                let lastMove = null;
-                let lastMoveLetter = null;
+                let lastMoves = [];
 
                 for (let i = 0; i < length; i++) {
                     let randomMove, randomModifier;
@@ -151,10 +150,17 @@
 
                         // Harf kontrolü
                         const currentMove = randomMove + randomModifier;
-                        if (currentMove !== lastMove && (lastMoveLetter !== randomMove || scramble.length < 2)) {
+
+                        // Son iki hareket aynı olmamalı ve aynı harfin en az bir iki hareket arayla gelmesi gerekiyor
+                        if (!lastMoves.includes(currentMove) && 
+                            !(lastMoves.length >= 2 && lastMoves[lastMoves.length - 2][0] === randomMove)) {
                             scramble.push(currentMove);
-                            lastMove = currentMove;
-                            lastMoveLetter = randomMove[0]; // Son hareketin ilk harfini kaydet
+                            lastMoves.push(currentMove);
+
+                            // Eğer son hareket 2'den fazla ise, son iki hareketi kaldır
+                            if (lastMoves.length > 2) {
+                                lastMoves.shift();
+                            }
                             validMove = true;
                         }
                     }
